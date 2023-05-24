@@ -5,7 +5,10 @@ project(OtusHomework_12_MR LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(OtusHomework_12_MR main.cpp)
+add_executable(OtusHomework_12_MR
+    Utils/BlockManager.hpp
+    main.cpp
+)
 
 install(TARGETS OtusHomework_12_MR
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
