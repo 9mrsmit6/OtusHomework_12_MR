@@ -11,6 +11,7 @@ add_executable(OtusHomework_12_MR
     Utils/BlockManager.hpp
     Distributor.hpp
     Map/Map.hpp
+    Shaffle/Shaffle.hpp
 
     main.cpp
 )

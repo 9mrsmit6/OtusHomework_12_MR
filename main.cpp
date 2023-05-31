@@ -1,13 +1,10 @@
 #include <iostream>
 #include "Utils/BlockManager.hpp"
 #include "Map/Map.hpp"
+#include "Shaffle/Shaffle.hpp"
 
 
 using namespace std;
-
-
-
-
 
 
 void testPrint(std::size_t start, std::filesystem::path path)
@@ -30,13 +27,16 @@ struct TestMap
 
     std::string&& execute(std::string&& str)
     {
+
         std::string* ret=new std::string{};
-        *ret=(str+"test");
+        *ret=str.substr(0,2);
         return std::move(*ret);
     }
 
 
 };
+
+
 
 int main()
 {
@@ -53,16 +53,23 @@ int main()
     }
 
 
-    Map<TestMap> m;
+    std::vector<std::shared_ptr<TestReducer>> vect;
+    vect.push_back(std::make_shared<TestReducer>());
+    vect.push_back(std::make_shared<TestReducer>());
+    vect.push_back(std::make_shared<TestReducer>());
+
+    ShaffleMap<std::string, TestReducer> map{vect};
+
+//    map.shaffleJob("dvdfvbdfv");
+
+    Map<TestMap> m(0,std::filesystem::file_size(fp), fp, map);
     m.execute();
 
     m.join();
 
+    std::cout<<"SASDAD";
 
-    std::cout<<"JOIN"<<std::endl;
 
-    m.execute();
-    m.join();
 
 //    std::size_t n{0};
 //    for(int i{0};i!=20;i++)
