@@ -12,11 +12,6 @@
 #include <vector>
 #include <algorithm>
 
-#include "../Shaffle/Shaffle.hpp"
-
-
-//std::thread(&CommandProcessor::loggerTask, this)
-
 
 template <class T>
 concept MapHandler=
@@ -25,11 +20,17 @@ concept MapHandler=
         {   m.execute(std::move(s))     }   ->  std::same_as<std::string&&>;
     };
 
+template <class T>
+concept MapShaflle=
+        requires( T m, std::vector<std::string>& s )
+    {
+           m.shaffleJob(s) ;
+    };
 
-template <MapHandler Handler>
+template <MapHandler Handler, MapShaflle Shaffle>
 struct Map
 {
-    Map(const std::size_t start_, const std::size_t stop_, const std::filesystem::path path_, ShaffleMap<std::string, TestReducer>& shaffler_):
+    Map(const std::size_t start_, const std::size_t stop_, const std::filesystem::path path_, Shaffle& shaffler_):
         start{start_},
         stop{stop_},
         path{path_},
@@ -57,7 +58,7 @@ private:
     const std::filesystem::path path;
     std::vector<std::string> out;
 
-    ShaffleMap<std::string, TestReducer>& shaffler;
+    Shaffle& shaffler;
 
     bool trueExecution{false};
 
@@ -71,12 +72,24 @@ private:
         {
             try
             {
-                std::sort(out.begin(),out.end());   trueExecution=true;
+                std::sort(out.begin(),out.end());
+                trueExecution=true;
 
-                for(auto& v:out)
+                auto start=out.begin();
+                while(true)
                 {
-                    shaffler.shaffleJob(v);
+                    auto rez=std::find_if(start, out.end(),[start](std::string& s) -> bool {    return s!=(*start);     }       );
+                    auto vect=std::vector(start,rez);
+                    shaffler.shaffleJob(vect);
+
+                    if(rez==out.end()){break;}
+                    start=rez;
                 }
+
+
+
+
+
             }
             catch(...)
             {

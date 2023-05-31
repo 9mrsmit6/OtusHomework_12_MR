@@ -10,27 +10,9 @@
 
 
 
-
-struct TestReducer
-{
-    TestReducer()=default;
-    ~ TestReducer()=default;
-
-    void addJob(std::string&& str)
-    {
-        vect.push_back(str);
-    }
-
-    std::vector<std::string> vect;
-};
-
-
-
-
-
 template <class T, class Job>
 concept ReducerForShuffle=
-        requires(T m, Job& s)
+        requires(T m, Job s)
     {
            m.addJob(std::move(s))     ;
     };
@@ -46,19 +28,28 @@ struct ShaffleMap
 
     ~ShaffleMap()=default;
 
-    void shaffleJob(Key& job)
+    void shaffleJob(std::vector<Key>& job)
     {
+        if(job.empty()){return ;}
+
         std::lock_guard guard(mutex);
 
-        if(map.contains(job))
+        if(map.contains(job[0]))
         {
-            map[job]->addJob(std::move(job));
+            auto& reducer=map[job[0]];
+            for(auto& v:job)
+            {
+                reducer->addJob(std::move(v));
+            }
         }
         else
         {
             auto& reducer=getNextReducer();
-            map[job]=reducer;
-            reducer->addJob(std::move(job));
+            map[job[0]]=reducer;
+            for(auto& v:job)
+            {
+                reducer->addJob(std::move(v));
+            }
         }
     }
 

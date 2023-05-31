@@ -12,6 +12,8 @@ add_executable(OtusHomework_12_MR
     Distributor.hpp
     Map/Map.hpp
     Shaffle/Shaffle.hpp
+    Reduce/Reduce.hpp
+    TestHandlers.hpp
 
     main.cpp
 )
