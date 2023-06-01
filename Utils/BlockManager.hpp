@@ -5,6 +5,8 @@
 #include <fstream>
 #include <optional>
 
+//Поиск границы блока в файле с учетом выравнивания по строкам
+
 struct BlockManager
 {
     BlockManager(std::size_t blockCount_, std::string filePath):
@@ -15,10 +17,9 @@ struct BlockManager
         blockSize=sz/blockCount;
     }
 
-    std::optional<std::size_t> getBlockOffset(std::size_t blockNumber) const
+    std::optional<std::size_t> getBlockEnd(std::size_t start) const
     {
-        if(blockNumber>=blockCount){    return std::nullopt;    }
-        auto offset=nextEndLine(blockNumber*blockSize);
+        auto offset=nextEndLine(start+blockSize);
         return offset;
     }
 
